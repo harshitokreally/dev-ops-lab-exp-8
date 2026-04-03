@@ -14,6 +14,7 @@ pipeline {
                 }
             }
         }
+
         stage('Test') {
             steps {
                 script {
@@ -41,6 +42,30 @@ pipeline {
                         bat 'docker stop test-container'
                         bat 'docker rm test-container'
                     }
+                }
+            }
+        }
+        
+        stage('Deploy Dev') {
+            steps {
+                script {
+                    // Cleanup existing Dev container [cite: 43]
+                    bat 'docker rm -f dev-container || rem'
+                    // Deploy to Dev environment on port 8080 [cite: 43]
+                    bat 'docker run -d --name dev-container -p 8080:80 my-web-app:latest'
+                    echo "Application deployed to Dev at http://localhost:8080"
+                }
+            }
+        }
+
+        stage('Deploy Prod') {
+            steps {
+                script {
+                    // Cleanup existing Prod container [cite: 45]
+                    bat 'docker rm -f prod-container || rem'
+                    // Deploy to Prod environment on port 9090 [cite: 45]
+                    bat 'docker run -d --name prod-container -p 9090:80 my-web-app:latest'
+                    echo "Application deployed to Prod at http://localhost:9090"
                 }
             }
         }
