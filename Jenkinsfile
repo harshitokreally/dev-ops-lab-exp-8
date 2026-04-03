@@ -17,6 +17,9 @@ pipeline {
         stage('Test') {
             steps {
                 script {
+                    // Cleanup any existing container with this name before starting
+                    bat 'docker rm -f test-container || rem'
+                    
                     // Task 6.1: Run the application inside a temporary container
                     // We map it to port 8081 to avoid conflicts with other stages
                     bat 'docker run -d --name test-container -p 8082:80 my-web-app:latest'
